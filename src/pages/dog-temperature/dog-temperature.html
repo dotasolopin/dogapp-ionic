@@ -3,11 +3,26 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>
-      Dog Temperature
-    </ion-title>
+    <ion-title></ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content padding id="page3">
-  <ion-title>Current temp: {{temp}}</ion-title>
+
+  <div text-center>
+    <h2 class="temp-title">Temperature</h2>
+    <p class="temp-desc">Below shows the temperature of your dog</p>
+  </div>
+
+  <div class="dog-info" *ngIf="sharedData.selectedDog">
+    <img [src]="sharedData.selectedDog.image">
+    <div class="dog-name"> <label>NAME:</label> {{sharedData.selectedDog.name}} </div>
+    <div class="dog-name"> <label>BREED:</label> {{sharedData.selectedDog.breed}} </div>
+  </div>
+
+  <div class="temp-value">{{temp}}</div>
+
+  <div ion-button color="secondary" block
+  *ngIf="temp || temp==0"
+  (click)="saveTemperature()">Save Temperature</div>
+  
 </ion-content>

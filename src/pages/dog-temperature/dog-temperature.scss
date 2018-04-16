@@ -1,3 +1,22 @@
 page-dog-temperature {
 
+	.temp-title {
+		margin-bottom: 0;
+		font-weight: 400;
+	}
+	.temp-desc {
+		margin-top: 0;
+		line-height: 20px;
+	}
+	.temp-value {
+		background: #427feb;
+		color: #fff;
+		font-size: 45px;
+		text-align: center;
+		border-radius: 5px;
+		line-height: 60px;
+		margin-top: 10px;
+		margin-bottom: 30px;
+	}
+
 }

@@ -1,35 +1,36 @@
-<ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>
-      Login
-    </ion-title>
-  </ion-navbar>
-</ion-header>
-<ion-content padding id="page5">
-  <form id="login-form1">
-    <ion-list id="login-list2">
-      <ion-item id="login-input1">
-        <ion-label>
-          Email
-        </ion-label>
-        <ion-input type="email" placeholder=""></ion-input>
-      </ion-item>
-      <ion-item id="login-input2">
-        <ion-label>
-          Password
-        </ion-label>
-        <ion-input type="password" placeholder=""></ion-input>
-      </ion-item>
-    </ion-list>
-    <div class="spacer" style="height:40px;" id="login-spacer2"></div>
-    <button id="login-button5" ion-button color="stable" block>
-      Log in
-    </button>
-    <button id="login-button6" ion-button clear color="positive" block href-inappbrowser="/signup">
-      Or create an account
-    </button>
-  </form>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+
+        <form (ngSubmit)="ready() && login()">
+          <ion-list>
+
+            <ion-item>
+              <ion-label stacked>Username</ion-label>
+              <ion-input type="text" [(ngModel)]="auth.username" name="usernmae"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label stacked>Password</ion-label>
+              <ion-input type="password" [(ngModel)]="auth.password" name="password"></ion-input>
+            </ion-item>
+
+          </ion-list>
+
+          <button type="submit" ion-button color="stable" block
+          [disabled]="!ready()"
+          >
+            Log in
+          </button>
+          <div ion-button clear color="positive" block
+          (click)="gotoSignup()">
+            Or create an account
+          </div>
+        </form>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

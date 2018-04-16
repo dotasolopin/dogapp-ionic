@@ -14,3 +14,33 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+.item-active {
+	color: #716aca;
+}
+
+.dog-info {
+	text-align: center;
+	padding-bottom: 15px;
+}
+.dog-info img {
+	width: 50px;
+    height: 50px;
+    border-radius: 100px;
+}
+
+.dog-info .dog-name {
+	font-size: 15px;
+    line-height: 25px;
+}
+.dog-info .dog-name label {
+	font-weight: 500;
+}
+
+.dd-btn {
+	position: absolute;
+    right: 3px;
+    top: 3px;
+    z-index: 1000;
+    font-size: 20px;
+}

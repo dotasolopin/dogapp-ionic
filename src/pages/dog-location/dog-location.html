@@ -3,9 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>
-      Dog Location
-    </ion-title>
+    <ion-title> </ion-title>
     <!-- <ion-buttons end>
       <button ion-button (click)="addMarker()"><ion-icon name="add"></ion-icon>Add Marker</button>
     </ion-buttons>  -->
@@ -15,6 +13,16 @@
 <!-- <ion-content padding id="page2">
   <div #map id="map"></div> 
 </ion-content> -->
-<ion-content>
+<ion-content padding>
+  <div class="dog-info" *ngIf="sharedData.selectedDog">
+    <img [src]="sharedData.selectedDog.image">
+    <div class="dog-name"> <label>NAME:</label> {{sharedData.selectedDog.name}} </div>
+    <div class="dog-name"> <label>BREED:</label> {{sharedData.selectedDog.breed}} </div>
+  </div>
+
+  <div ion-button color="secondary" block style="margin-top: 20px;" 
+  (click)="saveLocation()">Save Location</div>
+
   <div #map id="map"></div> 
+  
 </ion-content>

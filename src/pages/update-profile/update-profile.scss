@@ -1,0 +1,33 @@
+page-update-profile {
+
+	.img-holder {
+		width: 70px;
+		height: 70px;
+		margin: 0 auto;
+		border-radius: 100px;
+		position: relative;
+	}
+
+	.img-holder img {
+		width: 100%;
+		height: 70px;
+		border-radius: 100px;
+	}
+
+	.img-holder .plus{
+		background: red;
+		height: 20px;
+		width: 20px;
+		font-weight: 100;
+		border-radius: 100px;
+		font-size: 20px;
+		color: #fff;
+		position: absolute;
+		top: 0;
+		right: 0;
+		line-height: 20px;
+	}
+
+
+
+}

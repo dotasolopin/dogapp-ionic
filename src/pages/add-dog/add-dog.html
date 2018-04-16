@@ -1,0 +1,50 @@
+<ion-header >
+  <ion-navbar>
+    <button ion-button menuToggle *ngIf="showHeader">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Add Dog
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <form (ngSubmit)="ready() && addDog()">
+      <ion-list>
+
+        <ion-item>
+          <ion-label stacked>Dog Name</ion-label>
+          <ion-input type="text" name="name" [(ngModel)]="details.name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label stacked>Dog Breed</ion-label>
+          <ion-input type="text" name="breed" [(ngModel)]="details.breed"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label stacked>Birthdate</ion-label>
+          <ion-input type="text" name="birthdate" value="{{displayDate | date:'mediumDate'}}" readonly
+          (click)="openDatepicker()"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label stacked>Gender</ion-label>
+          <ion-select name="gender" [(ngModel)]="details.gender">
+            <ion-option value="name">Male</ion-option>
+            <ion-option value="female">Female</ion-option>
+          </ion-select>
+        </ion-item>
+
+      </ion-list>
+
+      <button type="submit" ion-button color="stable" block 
+      [disabled]="!ready()">
+        Add Dog
+      </button>
+
+    </form>
+  </ion-grid>
+</ion-content>

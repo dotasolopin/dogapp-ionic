@@ -13,9 +13,14 @@ export class TabsControllerPage {
   tab1Root: any = DogLocationPage;
   tab2Root: any = DogTemperaturePage;
   tab3Root: any = OptionsPage;
-  constructor(public navCtrl: NavController) {
-  }
+
+  constructor(
+    public navCtrl: NavController
+  ) { }
+
+
   tempClick(){
     console.log("Click! temp");
   }
+  
 }
