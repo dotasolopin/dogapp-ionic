@@ -33,6 +33,14 @@ export class DogLocationPage {
   earthRadius:number = 6371; // Radius of the earth in km
   dogDistance:any = 0;
 
+  // ref https://stackoverflow.com/questions/28928906/google-maps-api-drawing-routes-from-an-array-of-points
+  dogLocations:any = [];
+
+  // testData:any = {
+  //   longitude: 124.65499,
+  //   latitude: 8.484772399999999
+  // }  
+
 
   constructor(
     private rest:RestProvider,
@@ -110,14 +118,24 @@ export class DogLocationPage {
     this.rest.passData("devices/3","")
     .filter((d) =>  d !== undefined )
     .subscribe(data=>{
+      console.log(data)
 
         // test only
         // data.longitude = 124.65499;
         // data.latitude = 8.484772399999999;
 
+        // data = this.testData;
+
         let latLng = new google.maps.LatLng(data.latitude, data.longitude);
         this.marker.setPosition(latLng);
-        console.log(data)
+
+        this.dogLocations.push(latLng);
+
+        // let rLat = Math.random() * 0.00001;
+        // let rLong = Math.random() * 0.00001;
+
+        // this.testData.latitude += rLat;
+        // this.testData.longitude += rLong;
 
         if(self.userPosition) {
 
@@ -134,32 +152,39 @@ export class DogLocationPage {
 
           if(d < 1) {
             m = true;
-            d = parseFloat((d * 1000).toFixed(2));
+            d = parseFloat((d * 1000).toFixed(2)); // convert to meters
           }
           else {
             m = false;
-            d = parseFloat(d.toFixed(2));
+            d = parseFloat(d.toFixed(2)); // remain to km
           }
-
-          
 
           if( (!m  && d != this.dogDistance) || (d > 5 && d != this.dogDistance)) {
             this.dogDistance = d;
             let dogName = (self.sharedData.selectedDog) ? self.sharedData.selectedDog.name : 'Your dog';
             self.localNotifications.schedule({
-              id: 1,
-              text: `${dogName} is ${d} ${m ? 'meters':'kilometers'} away from you` 
+              id: new Date().getTime(),
+              text: `${dogName} is ${d} ${m ? 'meters':'kilometers'} away from you`
             });
+            console.log("must notify")
           }
 
           console.log(d);
 
         }
 
+        var flightPath = new google.maps.Polyline({
+            map: this.map,
+            path: this.dogLocations,
+            strokeColor: "#FF0000",
+            strokeOpacity: .7,
+            strokeWeight: 1
+        });
+
 
         setTimeout(() => {
           self.updateMap();
-        }, 5000)
+        }, 10000)
     })
 
   }
