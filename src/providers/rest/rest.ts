@@ -84,8 +84,8 @@ export class RestProvider {
   }
 
   private getBackendUrl() {
-    // return "http://localhost/dogapp-server/api/";
-    return "https://stark-refuge-28510.herokuapp.com/index.php/api/";
+    return "http://localhost/dogapp-server/api/";
+    // return "https://stark-refuge-28510.herokuapp.com/index.php/api/";
     // return this.storage.get('dogappbackendurl') || '';
   }
 

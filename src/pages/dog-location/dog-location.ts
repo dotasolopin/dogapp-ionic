@@ -63,7 +63,6 @@ export class DogLocationPage {
   loadMap(){
     let self = this;
  
-    // this.geolocation.getCurrentPosition().then((position) => {
  
       
       this.rest.passData("devices/3","").subscribe(data=>{
@@ -96,15 +95,9 @@ export class DogLocationPage {
         // });
         //add marker
         setTimeout(() => {
-          self.updateMap();
+          // self.updateMap();
         }, 5000)
       });
-    // }, (err) => {
-    //   console.log(err);
-    // });
-    // (success) => {
-    //   console.log(success);
-    // }
   }
 
   degreesToRadius(deg) {
