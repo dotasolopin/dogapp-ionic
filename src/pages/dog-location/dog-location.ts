@@ -125,15 +125,24 @@ export class DogLocationPage {
     this.rest.passData("devices/3","")
     .filter((d) =>  d !== undefined )
     .subscribe(data=>{
+      console.log(data)
 
         // test only
         // data.longitude = 124.65499;
         // data.latitude = 8.484772399999999;
 
+        // data = this.testData;
+
         let latLng = new google.maps.LatLng(data.latitude, data.longitude);
         this.marker.setPosition(latLng);
 
         this.dogLocations.push(latLng);
+
+        // let rLat = Math.random() * 0.00001;
+        // let rLong = Math.random() * 0.00001;
+
+        // this.testData.latitude += rLat;
+        // this.testData.longitude += rLong;
 
         if(self.userPosition) {
 
@@ -162,7 +171,7 @@ export class DogLocationPage {
             let dogName = (self.sharedData.selectedDog) ? self.sharedData.selectedDog.name : 'Your dog';
             self.localNotifications.schedule({
               id: new Date().getTime(),
-              text: `${dogName} is ${d} ${m ? 'meters':'kilometers'} away from you` 
+              text: `${dogName} is ${d} ${m ? 'meters':'kilometers'} away from you`
             });
             console.log("must notify")
           }
@@ -182,7 +191,7 @@ export class DogLocationPage {
 
         setTimeout(() => {
           self.updateMap();
-        }, 5000)
+        }, 10000)
     })
 
   }
