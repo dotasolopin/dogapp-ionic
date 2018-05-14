@@ -30,6 +30,7 @@ import { SharedDataProvider } from '../providers/shared-data/shared-data';
 import { DatePicker } from '@ionic-native/date-picker';
 import { Camera } from '@ionic-native/camera';
 import { LocalNotifications } from '@ionic-native/local-notifications';
+import { AddressProvider } from '../providers/address/address';
 
 
 @NgModule({
@@ -83,7 +84,8 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
     DatePicker,
     Camera,
     LocalNotifications,
-    SharedDataProvider
+    SharedDataProvider,
+    AddressProvider
   ]
 })
 export class AppModule {}

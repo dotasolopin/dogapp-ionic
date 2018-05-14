@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
+import { SharedDataProvider } from '../../providers/shared-data/shared-data';
 
 declare var google;
 
@@ -16,6 +17,7 @@ export class ViewLocationPage {
 
 	constructor(
 		public navCtrl: NavController,
+    private sharedData: SharedDataProvider,
 		public navParams: NavParams
 	) {
 		this.location = this.navParams.get('location');
@@ -43,14 +45,23 @@ export class ViewLocationPage {
       animation: google.maps.Animation.DROP,
       position: this.viewmap.getCenter()
     });
-    let content = "<p>Your dog is here!</p>"+"<p>Latitude: "+this.location.latitude+"</p><p>Longitude:"+this.location.longitude+"</p>";         
-    // this.addInfoWindow(marker, content);
+    let dogName = (this.sharedData.selectedDog) ? this.sharedData.selectedDog.name : 'Your dog';
+    let content = `<p><b>${dogName}</b> is here</p><p style="width:100px;">${this.location.address}</p>`      
     let infoWindow = new google.maps.InfoWindow({
       content: content
     });
   
-    // google.maps.event.addListener(marker, 'idle', () => {
-      infoWindow.open(this.viewmap, marker);
+    infoWindow.open(this.viewmap, marker);
+
+    var flightPath = new google.maps.Polyline({
+          map: this.viewmap,
+          path: this.location.tracklets,
+          strokeColor: "#FF0000",
+          strokeOpacity: 1,
+          strokeWeight: 1
+      });
+
+
 	}
 
 }

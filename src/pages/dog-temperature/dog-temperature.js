@@ -28,7 +28,7 @@ var DogTemperaturePage = /** @class */ (function () {
         var _this = this;
         var self = this;
         this.rest.passData("devices/3", "").subscribe(function (data) {
-            if (parseFloat(data.temp + "") > 37.0 && (_this.temp != data.temp)) {
+            if ((parseFloat(data.temp + "") > 37 || parseFloat(data.temp + "") < 27) && (_this.temp != data.temp)) {
                 var dogName = (self.sharedData.selectedDog) ? self.sharedData.selectedDog.name : 'Your dog';
                 self.localNotifications.schedule({
                     id: 1,

@@ -75,7 +75,7 @@ var SavedFilesPage = /** @class */ (function () {
         console.log(location);
         this.navCtrl.push(ViewLocationPage, { location: location });
     };
-    SavedFilesPage.prototype.confirmDelete = function (id) {
+    SavedFilesPage.prototype.confirmDelete = function (id, t) {
         var self = this;
         var alert = this.alertCtrl.create({
             title: 'Confirm delete',
@@ -88,7 +88,14 @@ var SavedFilesPage = /** @class */ (function () {
                 },
                 {
                     text: 'Yes',
-                    handler: function () { self.removeLocation(id); }
+                    handler: function () {
+                        if (t == 'location') {
+                            self.removeLocation(id);
+                        }
+                        else if (t == 'temperature') {
+                            self.removeTemperature(id);
+                        }
+                    }
                 }
             ]
         });
@@ -108,6 +115,22 @@ var SavedFilesPage = /** @class */ (function () {
         }, function (error) {
             loading.dismiss();
             self.presentToast("Unable to removed location");
+        });
+    };
+    SavedFilesPage.prototype.removeTemperature = function (id) {
+        var self = this;
+        var loading = this.loadingCtrl.create({
+            content: 'Please wait...'
+        });
+        loading.present();
+        this.rest.delete('temperature/', id)
+            .subscribe(function (response) {
+            loading.dismiss();
+            self.presentToast("Temperature removed");
+            self.getTemperature();
+        }, function (error) {
+            loading.dismiss();
+            self.presentToast("Unable to removed temperature");
         });
     };
     SavedFilesPage.prototype.presentToast = function (message) {

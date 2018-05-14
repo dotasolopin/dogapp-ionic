@@ -10,23 +10,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, LoadingController, ToastController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 import 'rxjs/add/operator/filter';
+import * as moment from 'moment';
 import { RestProvider } from '../../providers/rest/rest';
 import { SharedDataProvider } from '../../providers/shared-data/shared-data';
 var DogLocationPage = /** @class */ (function () {
-    function DogLocationPage(rest, navCtrl, loading, toast, geolocation, sharedData) {
+    function DogLocationPage(rest, navCtrl, loading, toast, geolocation, sharedData, localNotifications) {
         this.rest = rest;
         this.navCtrl = navCtrl;
         this.loading = loading;
         this.toast = toast;
         this.geolocation = geolocation;
         this.sharedData = sharedData;
+        this.localNotifications = localNotifications;
+        this.time = '';
         // ref https://stackoverflow.com/questions/18883601/function-to-calculate-distance-between-two-coordinates-shows-wrong?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
         this.earthRadius = 6371; // Radius of the earth in km
+        this.dogDistance = 0;
+        // ref https://stackoverflow.com/questions/28928906/google-maps-api-drawing-routes-from-an-array-of-points
+        this.dogLocations = [];
     }
     DogLocationPage.prototype.ionViewDidLoad = function () {
+        var _this = this;
         this.getPosition();
         this.loadMap();
+        setInterval(function () { _this.getTime(); }, 1000);
+    };
+    DogLocationPage.prototype.getTime = function () {
+        this.time = moment().format();
     };
     DogLocationPage.prototype.getPosition = function () {
         var _this = this;
@@ -40,7 +52,6 @@ var DogLocationPage = /** @class */ (function () {
     DogLocationPage.prototype.loadMap = function () {
         var _this = this;
         var self = this;
-        // this.geolocation.getCurrentPosition().then((position) => {
         this.rest.passData("devices/3", "").subscribe(function (data) {
             var latLng = new google.maps.LatLng(data.latitude, data.longitude);
             var mapOptions = {
@@ -68,26 +79,9 @@ var DogLocationPage = /** @class */ (function () {
             // });
             //add marker
             setTimeout(function () {
-                self.updateMap();
+                // self.updateMap();
             }, 5000);
         });
-        // }, (err) => {
-        //   console.log(err);
-        // });
-        // (success) => {
-        //   console.log(success);
-        // }
-    };
-    DogLocationPage.prototype.getDistanceFromLatLonInKm = function (lat1, lon1, lat2, lon2) {
-        var R = 6371; // Radius of the earth in km
-        var dLat = this.degreesToRadius(lat2 - lat1); // this.degreesToRadius below
-        var dLon = this.degreesToRadius(lon2 - lon1);
-        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(this.degreesToRadius(lat1)) * Math.cos(this.degreesToRadius(lat2)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        var d = R * c; // Distance in km
-        return d;
     };
     DogLocationPage.prototype.degreesToRadius = function (deg) {
         return deg * (Math.PI / 180);
@@ -98,26 +92,49 @@ var DogLocationPage = /** @class */ (function () {
         this.rest.passData("devices/3", "")
             .filter(function (d) { return d !== undefined; })
             .subscribe(function (data) {
-            // test only
-            data.longitude = 124.8;
-            data.latitude = 8.9;
+            console.log("API DATA", data);
             var latLng = new google.maps.LatLng(data.latitude, data.longitude);
             _this.marker.setPosition(latLng);
-            console.log(data);
+            console.log("LatLong to Push", latLng);
+            _this.dogLocations.push(latLng);
             if (self.userPosition) {
                 var latDegrees = _this.degreesToRadius(self.userPosition.latitude - data.latitude);
                 var lonDegrees = _this.degreesToRadius(self.userPosition.longitude - data.longitude);
                 var a = Math.sin(latDegrees / 2) * Math.sin(latDegrees / 2) +
-                    Math.cos(_this.degreesToRadius(self.userPosition.latitude)) * Math.cos(_this.degreesToRadius(lat2)) *
+                    Math.cos(_this.degreesToRadius(self.userPosition.latitude)) * Math.cos(_this.degreesToRadius(data.latitude)) *
                         Math.sin(lonDegrees / 2) * Math.sin(lonDegrees / 2);
-                var userPos = new LatLon(Dms.parseDMS(self.userPosition.latitude), Dms.parseDMS(self.userPosition.longitude));
-                var dogPos = new LatLon(Dms.parseDMS(data.latitude), Dms.parseDMS(data.longitude));
-                var distance = parseFloat(userPos.distanceTo(dogPos).toPrecision(4));
-                console.log(distance);
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                var d = _this.earthRadius * c; // Distance in km
+                var m = void 0;
+                if (d < 1) {
+                    m = true;
+                    d = parseFloat((d * 1000).toFixed(2)); // convert to meters
+                }
+                else {
+                    m = false;
+                    d = parseFloat(d.toFixed(2)); // remain to km
+                }
+                if ((!m && d != _this.dogDistance) || (d > 5 && d != _this.dogDistance)) {
+                    _this.dogDistance = d;
+                    var dogName = (self.sharedData.selectedDog) ? self.sharedData.selectedDog.name : 'Your dog';
+                    self.localNotifications.schedule({
+                        id: new Date().getTime(),
+                        text: dogName + " is " + d + " " + (m ? 'meters' : 'kilometers') + " away from you"
+                    });
+                    console.log("must notify");
+                }
+                console.log(d);
             }
+            var flightPath = new google.maps.Polyline({
+                map: _this.map,
+                path: _this.dogLocations,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1,
+                strokeWeight: 1
+            });
             setTimeout(function () {
                 self.updateMap();
-            }, 5000);
+            }, 10000);
         });
     };
     DogLocationPage.prototype.addInfoWindow = function (marker, content) {
@@ -129,26 +146,32 @@ var DogLocationPage = /** @class */ (function () {
             infoWindow.open(_this.map, marker);
         });
     };
-    DogLocationPage.prototype.saveLocation = function () {
+    DogLocationPage.prototype.save = function () {
         var _this = this;
         this.loadingIndicator = this.loading.create();
         this.loadingIndicator.present();
         if ([this.mapData.longitude, this.mapData.latitude].indexOf(null) > 0)
             return;
-        var data = {
+        var time = moment().format();
+        var locationData = {
             dogid: this.sharedData.selectedDog.id,
             longitude: this.mapData.longitude,
-            latitude: this.mapData.latitude
+            latitude: this.mapData.latitude,
+            time: 
         };
-        this.rest.post('location', data)
+        var temparatureData = {
+            dogid: this.sharedData.selectedDog.id,
+            temperature: this.temperature
+        };
+        this.rest.post('location', locationData)
             .subscribe(function (response) {
-            _this.presentToast("Location successfully saved");
+            _this.presentToast("Data successfully saved");
             _this.loadingIndicator.dismiss();
             console.log(response);
         }, function (error) {
             _this.loadingIndicator.dismiss();
-            _this.presentToast("Unable to save location");
-            console.log("Unable to save location", error);
+            _this.presentToast("Unable to save data");
+            console.log("Unable to save data", error);
         });
     };
     DogLocationPage.prototype.presentToast = function (message) {
@@ -172,7 +195,8 @@ var DogLocationPage = /** @class */ (function () {
             LoadingController,
             ToastController,
             Geolocation,
-            SharedDataProvider])
+            SharedDataProvider,
+            LocalNotifications])
     ], DogLocationPage);
     return DogLocationPage;
 }());

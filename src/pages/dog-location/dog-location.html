@@ -5,24 +5,24 @@
     </button>
     <ion-title> </ion-title>
     <ion-buttons end>
-      <button ion-button class="button-clear button-positive">Save</button>
+      <button ion-button class="button-clear button-positive" (click)="save()">Save</button>
     </ion-buttons> 
   </ion-navbar>
 </ion-header>
-<!-- <ion-content ></ion-content> -->
-<!-- <ion-content padding id="page2">
-  <div #map id="map"></div> 
-</ion-content> -->
+
 <ion-content padding>
+
+  <p text-right>{{time | date:'medium'}}</p>
+
+
   <div class="dog-info" *ngIf="sharedData.selectedDog">
     <img [src]="sharedData.selectedDog.image">
     <div class="dog-name"> <label>NAME:</label> {{sharedData.selectedDog.name}} </div>
     <div class="dog-name"> <label>BREED:</label> {{sharedData.selectedDog.breed}} </div>
   </div>
 
-  <div ion-button color="secondary" block style="margin-top: 20px;" 
-  (click)="saveLocation()">Save Location</div>
 
+  <div class="temp-value">{{temperature}}&#8451;</div>
   <div #map id="map"></div> 
   
 </ion-content>

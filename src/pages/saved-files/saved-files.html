@@ -35,8 +35,10 @@
 	<ion-list *ngIf="tabIndex == 0">
 		<ion-item-sliding *ngFor="let location of locations;">
 			<ion-item>
-				<h2>Latitude: {{location.latitude}}</h2>
-				<h2>Longitude: {{location.longitude}}</h2>
+				<h2 class="ellipsis">{{location.address}}</h2>
+				<p>{{location.client_time | date:'medium'}}</p>
+				<!-- <h2>Latitude: {{location.latitude}}</h2>
+				<h2>Longitude: {{location.longitude}}</h2> -->
 			</ion-item>
 			<ion-item-options side="right">
 				<button ion-button color="secondary"
@@ -57,8 +59,8 @@
 		<ion-item-sliding *ngFor="let temperature of temperatures;">
 
 			<ion-item>
-				<h2>Temperature: {{temperature.temperature}}</h2>
-				<p>{{getDate(temperature.date_created) | date:'medium'}}</p>
+				<h2>Temperature: {{temperature.temperature}}&#8451;</h2>
+				<p>{{temperature.client_time | date:'medium'}}</p>
 			</ion-item>
 
 			<ion-item-options side="right">
